@@ -8,18 +8,16 @@ pub const ICONS: [&[u8]; 6] = [
     include_bytes!("../assets/6.png"),
 ];
 
-pub fn get_icon(load: f32) -> &'static [u8] {
-    if load >= 0.98 {
-        return ICONS[ICONS.len() - 1];
+/// Expected input range is a percent of overall CPU load: 0 to 100
+pub fn get_icon(load: u8) -> &'static [u8] {
+    match load {
+        0..=16 => ICONS[0],
+        17..=33 => ICONS[1],
+        34..=50 => ICONS[2],
+        51..=67 => ICONS[3],
+        68..=84 => ICONS[4],
+        _ => ICONS[5],
     }
-    const STEPS: f32 = 100.0 / ICONS.len() as f32;
-    let mut step = 0.0;
-    let mut index = 0usize;
-    while load < step {
-        step += STEPS;
-        index += 1;
-    }
-    ICONS[index]
 }
 
 /// Functions for the OS-specific DoomGuy type
