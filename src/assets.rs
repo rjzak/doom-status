@@ -9,6 +9,7 @@ pub const ICONS: [&[u8]; 6] = [
 ];
 
 /// Expected input range is a percent of overall CPU load: 0 to 100
+#[inline]
 pub fn get_icon(load: u8) -> &'static [u8] {
     match load {
         0..=16 => ICONS[0],
@@ -20,11 +21,16 @@ pub fn get_icon(load: u8) -> &'static [u8] {
     }
 }
 
-/// Functions for the OS-specific DoomGuy type
-pub trait DoomGuy {
-    /// Check the CPU state and update the DoomGuy appearance, if needed.
-    fn update(&self);
-
-    /// OS-specific event loop.
-    fn run(&self);
+#[inline]
+pub fn load_icon(load: u8) -> tray_icon::Icon {
+    let bytes = get_icon(load);
+    let (icon_rgba, icon_width, icon_height) = {
+        let image = image::load_from_memory(bytes)
+            .expect("Failed to parse icon bytes")
+            .into_rgba8();
+        let (width, height) = image.dimensions();
+        let rgba = image.into_raw();
+        (rgba, width, height)
+    };
+    tray_icon::Icon::from_rgba(icon_rgba, icon_width, icon_height).expect("Failed to parse icon")
 }
