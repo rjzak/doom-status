@@ -7,11 +7,11 @@ authors = ["Richard Zak <richard.j.zak@gmail.com>"]
 description = "Show the CPU load in a menu or status bar by displaying the face of Doom Guy"
 
 [dependencies]
-core-foundation = "0.9.4"
+core-foundation = "0.10.0"
 image = "0.25.5"
 sysinfo = "0.33.1"
 tray-icon = "0.19.2"
-winit = "0.29.15"
+winit = "0.30.7"
 
 [profile.release]
 codegen-units = 1

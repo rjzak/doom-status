@@ -2,10 +2,8 @@ mod assets;
 
 use sysinfo::System;
 use tray_icon::{menu::Menu, TrayIconBuilder, TrayIconEvent};
-use winit::{
-    event::Event,
-    event_loop::{ControlFlow, EventLoopBuilder},
-};
+use winit::event_loop::EventLoop;
+use winit::{event::Event, event_loop::ControlFlow};
 
 enum UserEvent {
     TrayIconEvent(TrayIconEvent),
@@ -35,9 +33,7 @@ fn main() {
         gtk::main();
     });
 
-    let event_loop = EventLoopBuilder::<UserEvent>::with_user_event()
-        .build()
-        .unwrap();
+    let event_loop = EventLoop::<UserEvent>::with_user_event().build().unwrap();
 
     // set a tray event handler that forwards the event and wakes up the event loop
     //let proxy = event_loop.create_proxy();
