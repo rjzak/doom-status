@@ -20,13 +20,13 @@ fn main() {
         let mut sys = System::new_all();
         sys.refresh_cpu_all();
         let usage = sys.global_cpu_usage();
-        println!("CPU usage: {}", usage);
-        let icon = common::load_icon(usage as u8);
+        let icon = assets::load_icon(usage as u8);
 
         gtk::init().unwrap();
         let _tray_icon = TrayIconBuilder::new()
             .with_menu(Box::new(Menu::new()))
             .with_icon(icon)
+            .with_tooltip(format!("CPU usage: {:.1}%", usage))
             .build()
             .unwrap();
 
