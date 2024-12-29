@@ -21,6 +21,7 @@ pub fn get_icon(load: u8) -> &'static [u8] {
     }
 }
 
+/// Converts the build-in PNG to [tray_icon::Icon]
 #[inline]
 pub fn load_icon(load: u8) -> tray_icon::Icon {
     let bytes = get_icon(load);
@@ -33,4 +34,19 @@ pub fn load_icon(load: u8) -> tray_icon::Icon {
         (rgba, width, height)
     };
     tray_icon::Icon::from_rgba(icon_rgba, icon_width, icon_height).expect("Failed to parse icon")
+}
+
+/// Using [muda::Icon] here directly since there seems to be an import error with `tray_icon`
+#[inline]
+pub fn icon_zero_muda() -> muda::Icon {
+    let bytes = get_icon(0);
+    let (icon_rgba, icon_width, icon_height) = {
+        let image = image::load_from_memory(bytes)
+            .expect("Failed to parse icon bytes")
+            .into_rgba8();
+        let (width, height) = image.dimensions();
+        let rgba = image.into_raw();
+        (rgba, width, height)
+    };
+    muda::Icon::from_rgba(icon_rgba, icon_width, icon_height).expect("Failed to parse icon")
 }
