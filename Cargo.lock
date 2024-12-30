@@ -609,6 +609,7 @@ dependencies = [
  "vergen",
  "vergen-gitcl",
  "winit",
+ "winresource",
 ]
 
 [[package]]
@@ -3171,6 +3172,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f593a95398737aeed53e489c785df13f3618e41dbcd6718c6addbf1395aa6876"
 dependencies = [
  "memchr",
+]
+
+[[package]]
+name = "winresource"
+version = "0.1.19"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7276691b353ad4547af8c3268488d1311f4be791ffdc0c65b8cfa8f41eed693b"
+dependencies = [
+ "toml",
+ "version_check",
 ]
 
 [[package]]
