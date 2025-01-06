@@ -1,7 +1,6 @@
 mod assets;
 
-use std::cell::RefCell;
-
+use std::sync::{Arc, RwLock};
 use sysinfo::{CpuRefreshKind, RefreshKind, System};
 use tray_icon::menu::{AboutMetadata, Menu, MenuEvent, MenuItem, PredefinedMenuItem};
 use tray_icon::{TrayIcon, TrayIconBuilder, TrayIconEvent};
@@ -26,16 +25,30 @@ enum UserEvent {
     MenuEvent(MenuEvent),
 }
 
+#[derive(Clone)]
 struct Application {
-    quit_menu_item: MenuItem,
-    sys: RefCell<System>,
-    tray_icon: TrayIcon,
+    quit_menu_item: Arc<MenuItem>,
+    sys: Arc<RwLock<System>>,
+    tray_icon: Arc<RwLock<Option<TrayIcon>>>,
 }
+
+unsafe impl Send for Application {}
+unsafe impl Sync for Application {}
 
 impl Application {
     fn new() -> Self {
-        let quit_menu_item = MenuItem::new("Quit", true, None);
+        let quit_menu_item = Arc::new(MenuItem::new("Quit", true, None));
 
+        Self {
+            quit_menu_item,
+            sys: Arc::new(RwLock::new(System::new_with_specifics(
+                RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
+            ))),
+            tray_icon: Arc::new(RwLock::new(None)),
+        }
+    }
+
+    pub fn init(&self) {
         let tray_menu = Menu::new();
         tray_menu
             .append_items(&[
@@ -51,7 +64,7 @@ impl Application {
                     }),
                 ),
                 &PredefinedMenuItem::separator(),
-                &quit_menu_item,
+                self.quit_menu_item.as_ref(),
             ])
             .expect("Failed to create menu");
 
@@ -61,27 +74,29 @@ impl Application {
             .build()
             .expect("Failed to create tray icon object");
 
-        let app = Self {
-            quit_menu_item,
-            sys: RefCell::new(System::new_with_specifics(
-                RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
-            )),
-            tray_icon,
-        };
-
-        app.update();
-        app
+        if let Ok(mut tray_icon_guard) = self.tray_icon.write() {
+            *tray_icon_guard = Some(tray_icon);
+        }
     }
 
     pub fn update(&self) {
-        self.sys.borrow_mut().refresh_cpu_all();
-        let usage = self.sys.borrow().global_cpu_usage();
+        let usage = if let Ok(mut sys_guard) = self.sys.write() {
+            sys_guard.refresh_cpu_all();
+            sys_guard.global_cpu_usage()
+        } else {
+            println!("Failed to lock system cpu usage checker");
+            0f32
+        };
 
         // We create the icon once the event loop is actually running
         // to prevent issues like https://github.com/tauri-apps/tray-icon/issues/90
-        self.tray_icon
-            .set_icon(Some(assets::load_icon(usage as u8)))
-            .expect("Failed to set icon");
+        if let Ok(mut tray_icon_guard) = self.tray_icon.write() {
+            if let Some(tray_icon) = tray_icon_guard.as_mut() {
+                tray_icon
+                    .set_icon(Some(assets::load_icon(usage as u8)))
+                    .expect("Failed to set icon");
+            }
+        }
 
         #[cfg(debug_assertions)]
         println!("CPU usage: {:.1}%", usage);
@@ -91,6 +106,9 @@ impl Application {
 impl ApplicationHandler<UserEvent> for Application {
     fn new_events(&mut self, _event_loop: &ActiveEventLoop, cause: StartCause) {
         if cause == StartCause::Init {
+            #[cfg(not(target_os = "linux"))]
+            self.init();
+
             self.update();
 
             // We have to request a redraw here to have the icon actually show up.
@@ -141,29 +159,6 @@ fn main() {
         return;
     }
 
-    // Since winit doesn't use gtk on Linux, and we need gtk for
-    // the tray icon to show up, we need to spawn a thread
-    // where we initialize gtk and create the tray_icon
-    #[cfg(target_os = "linux")]
-    std::thread::spawn(|| {
-        use tray_icon::menu::Menu;
-
-        let mut sys = System::new_all();
-        sys.refresh_cpu_all();
-        let usage = sys.global_cpu_usage();
-        let icon = assets::load_icon(usage as u8);
-
-        gtk::init().unwrap();
-        let _tray_icon = TrayIconBuilder::new()
-            .with_menu(Box::new(Menu::new()))
-            .with_icon(icon)
-            .with_tooltip(format!("CPU usage: {:.1}%", usage))
-            .build()
-            .unwrap();
-
-        gtk::main();
-    });
-
     let event_loop = EventLoop::<UserEvent>::with_user_event().build().unwrap();
     event_loop.set_control_flow(ControlFlow::wait_duration(std::time::Duration::from_secs(
         2,
@@ -174,5 +169,24 @@ fn main() {
     }));
 
     let mut app = Application::new();
-    event_loop.run_app(&mut app).unwrap();
+
+    #[cfg(target_os = "linux")]
+    let app_copy = app.clone();
+
+    // Since winit doesn't use gtk on Linux, and we need gtk for
+    // the tray icon to show up, we need to spawn a thread
+    // where we initialize gtk and create the tray_icon
+    #[cfg(target_os = "linux")]
+    std::thread::spawn(|| {
+        let local_app = app_copy;
+        gtk::init().unwrap();
+
+        local_app.init();
+
+        gtk::main();
+    });
+
+    if let Err(err) = event_loop.run_app(&mut app) {
+        println!("Error: {:?}", err);
+    }
 }
