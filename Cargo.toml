@@ -9,10 +9,10 @@ readme = "readme.md"
 build = "build.rs"
 
 [dependencies]
-image = "0.25.5"
-muda = "0.15.3" # sub-dependency of tray-icon
-sysinfo = "0.33.1"
-tray-icon = "0.19.2"
+image = { version = "0.25.5", default-features = false, features = ["png"] }
+muda = { version = "0.15.3", default-features = false } # sub-dependency of tray-icon
+sysinfo = { version = "0.33.1", default-features = false, features = ["system"] }
+tray-icon = { version = "0.19.2", default-features = false }
 winit = "0.30.7"
 
 [target.'cfg(target_os = "macos")'.dependencies]
@@ -26,7 +26,7 @@ vergen = { version = "9.0.2", features = ["build"] }
 vergen-gitcl = { version = "1.0.2", features = ["build"] }
 
 [target.'cfg(windows)'.build-dependencies]
-winresource = { version = "0.1.19" }
+winresource = { version = "0.1.19", default-features = false }
 
 [profile.release]
 codegen-units = 1

@@ -2,7 +2,7 @@ mod assets;
 
 use std::cell::RefCell;
 
-use sysinfo::System;
+use sysinfo::{CpuRefreshKind, RefreshKind, System};
 use tray_icon::menu::{AboutMetadata, Menu, MenuEvent, MenuItem, PredefinedMenuItem};
 use tray_icon::{TrayIcon, TrayIconBuilder, TrayIconEvent};
 use winit::application::ApplicationHandler;
@@ -63,7 +63,9 @@ impl Application {
 
         let app = Self {
             quit_menu_item,
-            sys: RefCell::new(System::new_all()),
+            sys: RefCell::new(System::new_with_specifics(
+                RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
+            )),
             tray_icon,
         };
 
