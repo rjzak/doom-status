@@ -13,7 +13,7 @@ image = { version = "0.25.5", default-features = false, features = ["png"] }
 muda = { version = "0.15.3", default-features = false } # sub-dependency of tray-icon
 sysinfo = { version = "0.33.1", default-features = false, features = ["system"] }
 tray-icon = { version = "0.19.2", default-features = false }
-winit = "0.30.7"
+winit = "0.30.8"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 core-foundation = "0.10.0"
