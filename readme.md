@@ -1,5 +1,5 @@
 ## DOOM Status
-Show the status of your computer's CPU in the form of DOOM Guy! So far, it works on macOS and Windows. It compiles but fails to load on Linux.
+Show the status of your computer's CPU in the form of DOOM Guy! So far, it works on Linux, macOS, and Windows. Support for other operating systems is of interest and may be forthcoming.
 
 ### Related Projects
 This was inspired by these projects, and by my desire to continue learning more Rust.
