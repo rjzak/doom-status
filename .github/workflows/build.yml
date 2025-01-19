@@ -95,20 +95,21 @@ jobs:
         uses: indygreg/apple-code-sign-action@44d0985b7f4363198e80b6fea63ac3e9dd3e9957 # v1.1
         with:
           input_path: 'Doom Status.app'
-          #notarize: true
-          #staple: true
           p12_file: private_keys/cert.p12
           p12_password: ${{ secrets.CERTIFICATE_PASSWORD }}
-          #app_store_connect_api_key_json_file: private_keys/AuthKey_${{ secrets.API_KEY_ID }}.json
           sign_args: |
             --for-notarization
           rcodesign_version: '0.29.0'
         if: matrix.platform.host == 'macos-latest'
 
-      - name: Compress Mac app & cleanup
+      - name: Compress Mac app & Notarize
         run: |
           zip -r Doom\ Status.zip Doom\ Status.app
           rm -rf private_keys/
+          xcrun notarytool submit Doom\ Status.zip --apple-id ${{ secrets.APPLE_ID }} --password ${{ secrets.API_PASSWORD }} --team-id ${{ secrets.APPLE_TEAM_ID }} --wait
+          xcrun stapler staple Doom\ Status.app
+          rm Doom\ Status.zip
+          zip -r Doom\ Status.zip Doom\ Status.app
         if: matrix.platform.host == 'macos-latest'
 
       #- uses: actions/attest-build-provenance@7668571508540a607bdfd90a87a560489fe372eb # v2.1.0
