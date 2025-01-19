@@ -15,7 +15,7 @@
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>Doom_Status</string>
+    <string>Doom Status</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -39,6 +39,6 @@
     <key>LSMinimumSystemVersion</key>
     <string>10.14</string>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright (c) 2024 RJZak.</string>
+    <string>Copyright (c) 2025 RJZak</string>
 </dict>
 </plist>
