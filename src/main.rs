@@ -57,7 +57,7 @@ fn main() {
     #[cfg(target_os = "linux")]
     std::thread::spawn(|| {
         let local_app = app_copy;
-        gtk::init().unwrap();
+        gtk::init().expect("failed to initialize GTK");
 
         local_app.init();
 
