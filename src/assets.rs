@@ -10,21 +10,21 @@ pub const ICONS: [&[u8]; 6] = [
 
 /// Expected input range is a percent of overall CPU load: 0 to 100
 #[inline]
-pub fn get_icon(load: u8) -> &'static [u8] {
+pub fn get_icon(load: u8) -> (&'static [u8], u8) {
     match load {
-        0..=16 => ICONS[0],
-        17..=33 => ICONS[1],
-        34..=50 => ICONS[2],
-        51..=67 => ICONS[3],
-        68..=84 => ICONS[4],
-        _ => ICONS[5],
+        0..=16 => (ICONS[0], 0),
+        17..=33 => (ICONS[1], 1),
+        34..=50 => (ICONS[2], 2),
+        51..=67 => (ICONS[3], 3),
+        68..=84 => (ICONS[4], 4),
+        _ => (ICONS[5], 5),
     }
 }
 
 /// Converts the build-in PNG to [tray_icon::Icon]
 #[inline]
-pub fn load_icon(load: u8) -> tray_icon::Icon {
-    let bytes = get_icon(load);
+pub fn load_icon(load: u8) -> (tray_icon::Icon, u8) {
+    let (bytes, index) = get_icon(load);
     let (icon_rgba, icon_width, icon_height) = {
         let image = image::load_from_memory(bytes)
             .expect("Failed to parse icon bytes")
@@ -33,13 +33,17 @@ pub fn load_icon(load: u8) -> tray_icon::Icon {
         let rgba = image.into_raw();
         (rgba, width, height)
     };
-    tray_icon::Icon::from_rgba(icon_rgba, icon_width, icon_height).expect("Failed to parse icon")
+    (
+        tray_icon::Icon::from_rgba(icon_rgba, icon_width, icon_height)
+            .expect("Failed to parse icon"),
+        index,
+    )
 }
 
 /// Using [muda::Icon] here directly since there seems to be an import error with `tray_icon`
 #[inline]
 pub fn icon_zero_muda() -> muda::Icon {
-    let bytes = get_icon(0);
+    let (bytes, _index) = get_icon(0);
     let (icon_rgba, icon_width, icon_height) = {
         let image = image::load_from_memory(bytes)
             .expect("Failed to parse icon bytes")

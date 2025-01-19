@@ -14,7 +14,7 @@ use winit::window::WindowId;
 pub struct Application {
     quit_menu_item: Arc<MenuItem>,
     sys: Arc<RwLock<System>>,
-    tray_icon: Arc<RwLock<Option<TrayIcon>>>,
+    tray_icon_index: Arc<RwLock<(Option<TrayIcon>, u8)>>,
 }
 
 unsafe impl Send for Application {}
@@ -29,7 +29,7 @@ impl Application {
             sys: Arc::new(RwLock::new(System::new_with_specifics(
                 RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
             ))),
-            tray_icon: Arc::new(RwLock::new(None)),
+            tray_icon_index: Arc::new(RwLock::new((None, 0))),
         }
     }
 
@@ -53,14 +53,15 @@ impl Application {
             ])
             .expect("Failed to create menu");
 
+        let (image, _index) = assets::load_icon(0);
         let tray_icon = TrayIconBuilder::new()
             .with_menu(Box::new(tray_menu))
-            .with_icon(assets::load_icon(0))
+            .with_icon(image)
             .build()
             .expect("Failed to create tray icon object");
 
-        if let Ok(mut tray_icon_guard) = self.tray_icon.write() {
-            *tray_icon_guard = Some(tray_icon);
+        if let Ok(mut tray_icon_guard) = self.tray_icon_index.write() {
+            tray_icon_guard.0 = Some(tray_icon);
         }
     }
 
@@ -73,13 +74,16 @@ impl Application {
             0f32
         };
 
+        let (image, index) = assets::load_icon(usage as u8);
+
         // We create the icon once the event loop is actually running
         // to prevent issues like https://github.com/tauri-apps/tray-icon/issues/90
-        if let Ok(mut tray_icon_guard) = self.tray_icon.write() {
-            if let Some(tray_icon) = tray_icon_guard.as_mut() {
-                tray_icon
-                    .set_icon(Some(assets::load_icon(usage as u8)))
-                    .expect("Failed to set icon");
+        if let Ok(mut tray_icon_guard) = self.tray_icon_index.write() {
+            if tray_icon_guard.1 != index {
+                if let Some(tray_icon) = tray_icon_guard.0.as_mut() {
+                    tray_icon.set_icon(Some(image)).expect("Failed to set icon");
+                }
+                tray_icon_guard.1 = index;
             }
         }
 

@@ -14,6 +14,7 @@ pub struct Application {
     quit_menu_item: MenuItem,
     sys: RefCell<System>,
     tray_icon: RefCell<TrayIcon>,
+    index: RefCell<u8>,
 }
 
 impl Application {
@@ -39,9 +40,11 @@ impl Application {
             ])
             .expect("Failed to create menu");
 
+        let (image, _index) = assets::load_icon(0);
+
         let tray_icon = TrayIconBuilder::new()
             .with_menu(Box::new(tray_menu))
-            .with_icon(assets::load_icon(0))
+            .with_icon(image)
             .build()
             .expect("Failed to create tray icon object");
 
@@ -51,6 +54,7 @@ impl Application {
                 RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
             )),
             tray_icon: RefCell::new(tray_icon),
+            index: RefCell::new(0),
         }
     }
 
@@ -58,13 +62,16 @@ impl Application {
         self.sys.borrow_mut().refresh_cpu_all();
         let usage = self.sys.borrow().global_cpu_usage();
 
-        // We create the icon once the event loop is actually running
-        // to prevent issues like https://github.com/tauri-apps/tray-icon/issues/90
-        self.tray_icon
-            .borrow_mut()
-            .set_icon(Some(assets::load_icon(usage as u8)))
-            .expect("Failed to set icon");
-
+        let (image, index) = assets::load_icon(usage as u8);
+        if index != *self.index.borrow() {
+            // We create the icon once the event loop is actually running
+            // to prevent issues like https://github.com/tauri-apps/tray-icon/issues/90
+            self.tray_icon
+                .borrow_mut()
+                .set_icon(Some(image))
+                .expect("Failed to set icon");
+            self.index.replace(index);
+        }
         #[cfg(debug_assertions)]
         println!("CPU usage: {:.1}%", usage);
     }
