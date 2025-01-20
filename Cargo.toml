@@ -2,9 +2,11 @@
 name = "doom-status"
 version = "0.1.0"
 edition = "2021"
-license = "GPL-2"
+license = "GPL-2.0-only"
 authors = ["Richard Zak <richard.j.zak@gmail.com>"]
 description = "Show the CPU load in a menu or status bar by displaying the face of Doom Guy"
+homepage = "https://github.com/rjzak/doom-status"
+repository = "https://github.com/rjzak/doom-status"
 readme = "readme.md"
 build = "build.rs"
 
