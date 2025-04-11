@@ -25,7 +25,7 @@ gtk = "0.18"
 
 [build-dependencies]
 vergen = { version = "9.0.6", features = ["build"] }
-vergen-gitcl = { version = "1.0.5", features = ["build"] }
+vergen-gitcl = { version = "1.0.8", features = ["build"] }
 
 [target.'cfg(windows)'.build-dependencies]
 winresource = { version = "0.1.20", default-features = false }
