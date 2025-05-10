@@ -124,17 +124,17 @@ jobs:
           mv Doom\ Status.zip Doom\ Status\ macOS.zip
         if: matrix.platform.host == 'macos-latest'
 
-      - uses: actions/attest-build-provenance@520d128f165991a6c774bcb264f323e3d70747f4 # v2.2.0
+      - uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
         with:
           subject-path: target/release/${{ matrix.platform.file_name }}
         if: startsWith(github.ref, 'refs/tags/') && github.event_name == 'push'
 
-      - uses: actions/attest-build-provenance@520d128f165991a6c774bcb264f323e3d70747f4 # v2.2.0
+      - uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
         with:
           subject-path: target/aarch64-pc-windows-msvc/release/doom-status-arm64.exe
         if: matrix.platform.host == 'windows-latest' && startsWith(github.ref, 'refs/tags/') && github.event_name == 'push'
 
-      - uses: actions/attest-build-provenance@520d128f165991a6c774bcb264f323e3d70747f4 # v2.2.0
+      - uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
         with:
           subject-path: Doom\ Status.app/Contents/MacOS/doom-status
         if: matrix.platform.host == 'macos-latest' && startsWith(github.ref, 'refs/tags/') && github.event_name == 'push'
