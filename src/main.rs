@@ -33,13 +33,13 @@ pub enum UserEvent {
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() == 2 && args[1].contains("version") {
-        println!("doom-status {}", VERSION);
+        println!("doom-status {VERSION}");
         return;
     }
 
     let event_loop = EventLoop::<UserEvent>::with_user_event().build().unwrap();
     event_loop.set_control_flow(ControlFlow::wait_duration(std::time::Duration::from_secs(
-        2,
+        5,
     )));
     let proxy = event_loop.create_proxy();
     MenuEvent::set_event_handler(Some(move |event| {
@@ -65,6 +65,6 @@ fn main() {
     });
 
     if let Err(err) = event_loop.run_app(&mut app) {
-        println!("Error: {:?}", err);
+        println!("Error: {err:?}");
     }
 }

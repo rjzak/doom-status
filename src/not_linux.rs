@@ -73,7 +73,7 @@ impl Application {
             self.index.replace(index);
         }
         #[cfg(debug_assertions)]
-        println!("CPU usage: {:.1}%", usage);
+        println!("CPU usage: {usage:.1}%");
     }
 }
 
