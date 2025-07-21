@@ -13,7 +13,7 @@ build = "build.rs"
 [dependencies]
 image = { version = "0.25.6", default-features = false, features = ["png"] }
 muda = { version = "0.17.0", default-features = false } # sub-dependency of tray-icon
-sysinfo = { version = "0.36.0", default-features = false, features = ["system"] }
+sysinfo = { version = "0.36.1", default-features = false, features = ["system"] }
 tray-icon = { version = "0.21.0", default-features = false }
 winit = "0.30.11"
 
