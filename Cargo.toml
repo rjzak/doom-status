@@ -24,7 +24,7 @@ core-foundation = "0.10.1"
 gtk = "0.18"
 
 [build-dependencies]
-vergen = { version = "9.0.6", features = ["build"] }
+vergen = { version = "9.1.0", features = ["build"] }
 vergen-gitcl = { version = "1.0.8", features = ["build"] }
 
 [target.'cfg(windows)'.build-dependencies]
