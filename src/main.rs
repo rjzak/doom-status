@@ -15,12 +15,9 @@ use tray_icon::TrayIconEvent;
 use winit::event_loop::{ControlFlow, EventLoop};
 
 pub const VERSION: &str = concat!(
-    "v",
-    env!("CARGO_PKG_VERSION"),
-    "-",
-    env!("VERGEN_GIT_DESCRIBE"),
+    env!("DOOM_STATUS_VERSION"),
     " ",
-    env!("VERGEN_BUILD_DATE")
+    env!("DOOM_STATUS_BUILD_DATE")
 );
 
 #[allow(dead_code)]
