@@ -6,6 +6,7 @@ jobs:
   lint:
     name: Cargo clippy & fmt
     strategy:
+      fail-fast: false
       matrix:
         os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
     runs-on: ${{ matrix.os }}
@@ -45,6 +46,7 @@ jobs:
   udeps:
     name: Unused dependencies
     strategy:
+      fail-fast: false
       matrix:
         os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
     runs-on: ${{ matrix.os }}
@@ -87,6 +89,7 @@ jobs:
   audit:
     name: Cargo Audit
     strategy:
+      fail-fast: false
       matrix:
         os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
     runs-on: ${{ matrix.os }}
