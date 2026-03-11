@@ -11,7 +11,7 @@ readme = "readme.md"
 build = "build.rs"
 
 [dependencies]
-image = { version = "0.25.9", default-features = false, features = ["png"] }
+image = { version = "0.25.10", default-features = false, features = ["png"] }
 muda = { version = "0.17.1", default-features = false } # sub-dependency of tray-icon
 sysinfo = { version = "0.38.4", default-features = false, features = ["system"] }
 tray-icon = { version = "0.21.3", default-features = false }
