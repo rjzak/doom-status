@@ -144,7 +144,7 @@ jobs:
         if: matrix.platform.host != 'windows-latest'
 
       - name: Upload ${{ matrix.platform.os_name }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: doom-status_${{ matrix.platform.os_name }}
           path: target/release/${{ matrix.platform.file_name }}_${{ matrix.platform.os_name }}
@@ -153,7 +153,7 @@ jobs:
         if: matrix.platform.host != 'windows-latest'
 
       - name: Upload ${{ matrix.platform.os_name }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: doom-status.exe
           path: target/release/${{ matrix.platform.file_name }}
@@ -162,7 +162,7 @@ jobs:
         if: matrix.platform.host == 'windows-latest'
 
       - name: Upload Windows Arm64
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: doom-status-arm64.exe
           path: target/aarch64-pc-windows-msvc/release/doom-status-arm64.exe
@@ -171,7 +171,7 @@ jobs:
         if: matrix.platform.host == 'windows-latest'
 
       - name: Upload Mac OS binary
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: 'Doom Status macOS.zip'
           path: 'Doom Status macOS.zip'
