@@ -59,7 +59,7 @@ jobs:
         if: matrix.platform.host == 'ubuntu-latest'
 
       - name: Install extra tools (Windows)
-        uses: ChristopheLav/windows-sdk-install@88d72875fb873886ea398ed04041446da6f26f86 # v1.0.3
+        uses: ChristopheLav/windows-sdk-install@aceebd61475568479ce68465d0849f5de9a0bfe9 # v1.0.5
         with:
           version-sdk: 22621
           features: 'OptionId.DesktopCPPx64,OptionId.DesktopCPParm64'
