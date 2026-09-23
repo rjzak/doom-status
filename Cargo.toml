@@ -8,6 +8,7 @@ description = "Show the CPU load in a menu or status bar by displaying the face 
 homepage = "https://github.com/rjzak/doom-status"
 repository = "https://github.com/rjzak/doom-status"
 readme = "readme.md"
+rust-version = "1.95.0"
 build = "build.rs"
 
 [dependencies]
