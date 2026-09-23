@@ -3,8 +3,7 @@ use std::ops::Add;
 use chrono::Utc;
 
 fn main() {
-    #[cfg(target_os = "windows")]
-    {
+    if std::env::var("CARGO_CFG_TARGET_OS").unwrap() == "windows" {
         let mut res = winresource::WindowsResource::new();
         res.set_icon("assets/1.ico");
         res.compile().unwrap();

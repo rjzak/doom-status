@@ -26,9 +26,11 @@ gtk = "0.19.0"
 
 [build-dependencies]
 chrono = { version = "0.4", features = ["now"] }
-
-[target.'cfg(windows)'.build-dependencies]
 winresource = { version = "0.1.31", default-features = false }
+
+[package.metadata.winresource]
+OriginalFilename = "DOOM-STATUS.EXE"
+LegalCopyright = "Code Copyright © 2026, rjzak; Icons Copyright © id Software"
 
 [profile.release]
 codegen-units = 1
