@@ -1,7 +1,5 @@
 use std::ops::Add;
 
-use chrono::Utc;
-
 fn main() {
     if std::env::var("CARGO_CFG_TARGET_OS").unwrap() == "windows" {
         let mut res = winresource::WindowsResource::new();
@@ -66,9 +64,4 @@ fn main() {
             env!("CARGO_PKG_VERSION")
         );
     }
-
-    println!(
-        "cargo:rustc-env=DOOM_STATUS_BUILD_DATE={}",
-        Utc::now().format("%Y-%m-%d")
-    );
 }

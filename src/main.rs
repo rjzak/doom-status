@@ -14,12 +14,6 @@ use tray_icon::menu::MenuEvent;
 use tray_icon::TrayIconEvent;
 use winit::event_loop::{ControlFlow, EventLoop};
 
-pub const VERSION: &str = concat!(
-    env!("DOOM_STATUS_VERSION"),
-    " ",
-    env!("DOOM_STATUS_BUILD_DATE")
-);
-
 #[allow(dead_code)]
 #[derive(Debug)]
 pub enum UserEvent {
@@ -30,7 +24,7 @@ pub enum UserEvent {
 fn main() {
     let args: Vec<String> = std::env::args().collect();
     if args.len() == 2 && args[1].contains("version") {
-        println!("doom-status {VERSION}");
+        println!("doom-status {}", env!("DOOM_STATUS_VERSION"));
         return;
     }
 

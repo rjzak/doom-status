@@ -1,4 +1,4 @@
-use crate::{assets, UserEvent, VERSION};
+use crate::{assets, UserEvent};
 
 use std::ops::Deref;
 use std::sync::{Arc, Mutex};
@@ -50,7 +50,7 @@ impl Application {
                         Some(AboutMetadata {
                             name: Some("doom-status".to_string()),
                             copyright: Some("Copyright rjzak".to_string()),
-                            version: Some(VERSION.to_string()),
+                            version: Some(env!("DOOM_STATUS_VERSION").to_string()),
                             short_version: Some(env!("CARGO_PKG_VERSION").to_string()),
                             icon: Some(assets::icon_zero_muda()),
                             ..Default::default()
