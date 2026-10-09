@@ -11,37 +11,47 @@ jobs:
         os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
     runs-on: ${{ matrix.os }}
     steps:
-    - name: Harden Runner
-      uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
-      with:
-        egress-policy: block
-        allowed-endpoints: >
-          archive.ubuntu.com:80
-          azure.archive.ubuntu.com:80
-          crates.io:443
-          esm.ubuntu.com:443
-          github.com:443
-          index.crates.io:443
-          motd.ubuntu.com:443
-          ppa.launchpadcontent.net:443
-          security.ubuntu.com:80
-          static.crates.io:443
-          static.rust-lang.org:443
+      - name: Harden Runner
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: block
+          allowed-endpoints: >
+            archive.ubuntu.com:80
+            azure.archive.ubuntu.com:80
+            crates.io:443
+            crl.globalsign.com:443
+            crl.sectigo.com:443
+            client.wns.windows.com:443
+            esm.ubuntu.com:443
+            github.com:443
+            index.crates.io:443
+            mobile.events.data.microsoft.com:443
+            motd.ubuntu.com:443
+            ocsp.globalsign.com:443
+            ocsp2.globalsign.com:443
+            ocsp.sectigo.com:443
+            ppa.launchpadcontent.net:443
+            security.ubuntu.com:80
+            static.crates.io:443
+            static.rust-lang.org:443
+            telemetry.visualstudio.microsoft.com:443
 
-    - name: Install Dependencies (Linux)
-      run: sudo apt-get install -y libgtk-3-dev libglib2.0-dev build-essential
-      if: matrix.os == 'ubuntu-latest'
+      - name: Install Dependencies (Linux)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libglib2.0-dev build-essential
+        if: matrix.os == 'ubuntu-latest'
 
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-    - name: Setup Rust toolchain
-      run: rustup show && rustup update
+      - name: Setup Rust toolchain
+        run: rustup show && rustup update
 
-    - name: cargo fmt
-      run: cargo fmt -- --check
+      - name: cargo fmt
+        run: cargo fmt -- --check
 
-    - name: cargo clippy
-      run: cargo clippy --all-features --tests -- -D warnings
+      - name: cargo clippy
+        run: cargo clippy --all-features --tests -- -D warnings
 
   udeps:
     name: Unused dependencies
@@ -56,22 +66,28 @@ jobs:
         with:
           egress-policy: block
           allowed-endpoints: >
+            api.github.com:443
             archive.ubuntu.com:80
             azure.archive.ubuntu.com:80
             api.github.com:443
             crates.io:443
             esm.ubuntu.com:443
             github.com:443
+            githubapp.com:443
             index.crates.io:443
             motd.ubuntu.com:443
             objects.githubusercontent.com:443
+            packages.microsoft.com:443
             ppa.launchpadcontent.net:443
+            release-assets.githubusercontent.com:443
             security.ubuntu.com:80
             static.crates.io:443
             static.rust-lang.org:443
 
       - name: Install Dependencies (Linux)
-        run: sudo apt-get install -y libgtk-3-dev libglib2.0-dev build-essential
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libglib2.0-dev build-essential
         if: matrix.os == 'ubuntu-latest'
 
       - name: Checkout repository
@@ -80,8 +96,10 @@ jobs:
       - name: Install nightly toolchain
         uses: dtolnay/rust-toolchain@53c04d3685fcc3ca67ce478eb9c2ea5c051a4a63 # nightly
 
-      - name: Install cargo-udeps
-        run: cargo install cargo-udeps --locked
+      - name: Install cargo udeps
+        uses: taiki-e/install-action@4cef1412cce204788f482e778a0b9187f9626a29 # v2.87.21
+        with:
+          tool: cargo-udeps
 
       - name: Run udeps
         run: cargo +nightly udeps
@@ -100,16 +118,23 @@ jobs:
           disable-sudo: true
           egress-policy: block
           allowed-endpoints: >
+            api.github.com:443
             crates.io:443
             github.com:443
+            githubapp.com:443
             index.crates.io:443
+            objects.githubusercontent.com:443
+            packages.microsoft.com:443
+            release-assets.githubusercontent.com:443
             static.crates.io:443
 
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Install Cargo Audit
-        run: cargo install cargo-audit
+        uses: taiki-e/install-action@4cef1412cce204788f482e778a0b9187f9626a29 # v2.87.21
+        with:
+          tool: cargo-audit
 
       - name: Run Cargo Audit
         run: cargo audit
