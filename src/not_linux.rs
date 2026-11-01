@@ -50,9 +50,12 @@ impl Application {
 
         Self {
             quit_menu_item,
-            sys: RefCell::new(System::new_with_specifics(
-                RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
-            )),
+            sys: RefCell::new(
+                System::new_with_specifics(
+                    RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
+                )
+                .expect("Can't create system object"),
+            ),
             tray_icon: RefCell::new(tray_icon),
             index: RefCell::new(0),
         }

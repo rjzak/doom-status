@@ -31,9 +31,12 @@ impl Application {
 
         Self {
             quit_menu_item,
-            sys: Arc::new(Mutex::new(System::new_with_specifics(
-                RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
-            ))),
+            sys: Arc::new(Mutex::new(
+                System::new_with_specifics(
+                    RefreshKind::nothing().with_cpu(CpuRefreshKind::everything()),
+                )
+                .expect("Can't create system object"),
+            )),
             #[allow(clippy::arc_with_non_send_sync)]
             tray_icon_index: Arc::new(Mutex::new((None, 0))),
         }
